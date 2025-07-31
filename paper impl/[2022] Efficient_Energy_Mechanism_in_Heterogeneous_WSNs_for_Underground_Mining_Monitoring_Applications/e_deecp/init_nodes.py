@@ -2,30 +2,40 @@ import numpy as np
 from config import *
 
 def initialize_nodes():
-    # Initialize energy and type arrays
+    """
+    Initializes sensor nodes with heterogeneous energy levels:
+    - Normal nodes: energy = Eo
+    - High-energy nodes: energy = Eo * (1 + alpha)
+    - Super-energy nodes: energy = Eo * (1 + beta)
+
+    Based on:
+    - Eq. (3): total energy calculation with 3 node types
+    - Eq. (4): simplified total energy expression
+
+    Returns:
+    - energies: array of initial energies
+    - types: array of node types (0 = normal, 1 = high, 2 = super)
+    """
     energies = np.zeros(NUM_NODES)
     types = np.zeros(NUM_NODES)  # 0 = normal, 1 = high, 2 = super
 
-    # Calculate number of high and super energy nodes
-    Nh = int(h * NUM_NODES)       # High-energy nodes (including super)
-    Ns = int(S * Nh)              # Super-energy nodes (subset of high-energy)
+    Nh = int(h * NUM_NODES)        # High + super nodes (h fraction)
+    Ns = int(S * Nh)               # Super nodes (S fraction of Nh)
 
-    # Shuffle node indices randomly
-    node_indices = np.random.permutation(NUM_NODES)
+    node_indices = np.random.permutation(NUM_NODES)  # Random assignment
 
-    # Assign super, high, and normal energy node indices
-    super_ids = node_indices[:Ns]
-    high_ids = node_indices[Ns:Nh]
-    normal_ids = node_indices[Nh:]
+    super_ids = node_indices[:Ns]              # First S*Nh nodes → super
+    high_ids = node_indices[Ns:Nh]             # Next (h - S)*N nodes → high
+    normal_ids = node_indices[Nh:]             # Remaining nodes → normal
 
-    # Set energy levels and types
+    # Assign energy values and types
     energies[super_ids] = Eo * (1 + beta)
-    types[super_ids] = 2  # Super nodes
+    types[super_ids] = 2
 
     energies[high_ids] = Eo * (1 + alpha)
-    types[high_ids] = 1   # High-energy nodes
+    types[high_ids] = 1
 
     energies[normal_ids] = Eo
-    types[normal_ids] = 0  # Normal nodes
+    types[normal_ids] = 0
 
     return energies, types

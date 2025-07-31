@@ -5,6 +5,10 @@ import numpy as np
 
 # --- Dynamic config rewriter ---
 def update_config_file(num_nodes, p_opt):
+    """
+    Dynamically updates the config.py file with new NUM_NODES and p_opt values.
+    This allows simulation for different network sizes with appropriate CH election probabilities.
+    """
     with open("config.py", "r") as f:
         lines = f.readlines()
 
@@ -20,8 +24,11 @@ def update_config_file(num_nodes, p_opt):
     with open("config.py", "w") as f:
         f.writelines(updated_lines)
 
-# --- Reload simulation environment ---
+# --- Reload simulation environment (after config update) ---
 def reload_simulation_env():
+    """
+    Reloads Python modules after updating config.py
+    """
     for mod in [
         "config",
         "index",
@@ -37,7 +44,7 @@ def reload_simulation_env():
     from index import simulate
     return simulate
 
-# --- Configs to test ---
+# --- Configs to test: (NUM_NODES, p_opt)
 configs = [
     (50, 0.21),
     (100, 0.05),
@@ -49,6 +56,7 @@ results = {}
 
 print("\nSimulation Summary:\n")
 
+# --- Run simulations for all configs
 for N, p in configs:
     update_config_file(N, p)
     simulate = reload_simulation_env()
@@ -63,35 +71,36 @@ for N, p in configs:
         "proposed": {"dead": dead_p, "alive": alive_p, "throughput": th_p},
     }
 
+    # Find the round when all nodes are dead
     last_b = next((i for i, x in enumerate(dead_b) if x == N), -1)
     last_p = next((i for i, x in enumerate(dead_p) if x == N), -1)
 
     print(f"  Baseline  DEECP - Last node died at round: {last_b}")
     print(f"  Proposed Method - Last node died at round: {last_p}\n")
 
-# --- Plot Dead Nodes ---
+# --- Plot: Dead Nodes vs Rounds (All Configs)
 plt.figure(figsize=(11, 5))
 for N, _ in configs:
     plt.plot(results[N]["baseline"]["dead"], linestyle="--", label=f"Baseline N={N}")
     plt.plot(results[N]["proposed"]["dead"], label=f"Proposed N={N}")
 plt.title("Dead Nodes During Network Operation")
 plt.xlabel("Simulation Duration (sec)")
-plt.ylabel("Dead Nodes")
+plt.ylabel("Number of Dead Nodes")
 plt.grid(True)
 plt.legend()
 
-# --- Plot Alive Nodes ---
+# --- Plot: Alive Nodes vs Rounds (All Configs)
 plt.figure(figsize=(11, 5))
 for N, _ in configs:
     plt.plot(results[N]["baseline"]["alive"], linestyle="--", label=f"Baseline N={N}")
     plt.plot(results[N]["proposed"]["alive"], label=f"Proposed N={N}")
 plt.title("Alive Nodes During Network Operation")
 plt.xlabel("Simulation Duration (sec)")
-plt.ylabel("Alive Nodes")
+plt.ylabel("Number of Alive Nodes")
 plt.grid(True)
 plt.legend()
 
-# --- Bar Chart: Last node death round ---
+# --- Bar Chart: Rounds until all nodes die (Network Lifetime)
 labels = [str(N) for N, _ in configs]
 baseline_lifetimes = []
 proposed_lifetimes = []
@@ -113,10 +122,11 @@ plt.figure(figsize=(8, 5))
 plt.bar(x - width / 2, baseline_lifetimes, width, label='DEECP (Baseline)', color='steelblue')
 plt.bar(x + width / 2, proposed_lifetimes, width, label='Proposed Method', color='orange')
 plt.xlabel('Number of Nodes')
-plt.ylabel('Rounds until all nodes die')
-plt.title('Network Lifetime Comparison')
+plt.ylabel('Duration of All Dead Nodes (Rounds)')
+plt.title('All Dead Nodes Due to the Impact of Number of Nodes')
 plt.xticks(x, labels)
 plt.grid(True, axis='y', linestyle='--', alpha=0.6)
 plt.legend()
 plt.tight_layout()
 plt.show()
+# --- End of simulation script ---
