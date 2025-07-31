@@ -75,8 +75,12 @@ for N, p in configs:
     last_b = next((i for i, x in enumerate(dead_b) if x == N), -1)
     last_p = next((i for i, x in enumerate(dead_p) if x == N), -1)
 
-    print(f"  Baseline  DEECP - Last node died at round: {last_b}")
-    print(f"  Proposed Method - Last node died at round: {last_p}\n")
+    first_b = next((i for i, x in enumerate(dead_b) if x >= 1), -1)
+    first_p = next((i for i, x in enumerate(dead_p) if x >= 1), -1)
+
+    print(f"  Baseline  DEECP - First node died at round: {first_b}, Last node died at round: {last_b}")
+    print(f"  Proposed Method - First node died at round: {first_p}, Last node died at round: {last_p}\n")
+
 
 # --- Plot: Dead Nodes vs Rounds (All Configs)
 plt.figure(figsize=(11, 5))
