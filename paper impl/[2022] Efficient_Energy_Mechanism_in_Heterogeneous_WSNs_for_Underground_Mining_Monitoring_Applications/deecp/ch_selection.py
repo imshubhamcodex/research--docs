@@ -1,7 +1,7 @@
 import numpy as np
 from config import *
 
-def select_CHs(energies, alive, E_total, round_num):
+def select_CHs(positions, energies, alive, E_total, round_num):
     """
     Selects Cluster Heads based on DEECP logic.
     
