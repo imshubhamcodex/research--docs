@@ -75,16 +75,20 @@ def simulate(method="baseline"):
                 survived = energies[i] > 0
                 
                 energy_norm = normalize(energies[i], 0, Eo * (1 + beta))
+                alive_ratio = np.sum(energies > 0) / NUM_NODES
                 dist_to_sink = np.linalg.norm(positions[i] - np.array(SINK_POS))
                 dist_norm = normalize(dist_to_sink, 0, np.sqrt(AREA**2 + AREA**2))
 
-                # Reward shaping
                 if is_ch and survived:
-                    reward = 0.8 + 0.2 * energy_norm  # Encourage CHs with high energy
+                    reward = (
+                        0.8 + 0.2 * energy_norm +     # High energy CH gets more reward
+                        0.1 * (1 - dist_norm) +       # Prefer CHs close to sink
+                        0.2 * alive_ratio             # Favor when more nodes are alive
+                    )
                 elif is_ch and not survived:
-                    reward = -1.0  # Penalize dying CHs
+                    reward = -1.0                    # Strong penalty for dying CH
                 elif not is_ch and survived:
-                    reward = 0.3 * energy_norm
+                    reward = 0.1 * energy_norm + 0.1 * alive_ratio
                 else:
                     reward = 0.0
 
