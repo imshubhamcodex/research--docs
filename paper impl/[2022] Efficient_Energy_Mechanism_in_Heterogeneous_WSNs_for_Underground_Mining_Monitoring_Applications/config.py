@@ -1,6 +1,6 @@
 # Network Area and Setup
 AREA = 200
-NUM_NODES = 200
+NUM_NODES = 150
 ROUNDS = 12000
 SINK_POS = (AREA / 2, AREA / 2)  # Sink at center
 
@@ -19,7 +19,7 @@ Emp = 0.0013e-12   # Multipath model energy (d^4) for long range
 packet_size = 3000  # bits per message
 
 # Optimal probability of CH election (used in DEECP + Proposed) → Eq. (5), (11)
-p_opt = 0.01
+p_opt = 0.02
 
 # Notes:
 # - Total energy (Eq. 2 / Eq. 4) calculated in main simulation.

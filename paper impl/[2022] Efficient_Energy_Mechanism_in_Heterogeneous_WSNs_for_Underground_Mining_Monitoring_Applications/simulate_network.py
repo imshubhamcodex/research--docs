@@ -63,7 +63,7 @@ configs = [
     (50, 0.21),
     (100, 0.05),
     (150, 0.02),
-    (200, 0.01),
+    # (200, 0.01),
 ]
 
 results = {}
@@ -71,6 +71,7 @@ results = {}
 # ------------------------------
 # Step 4: Run Simulations
 # ------------------------------
+print(f"\nSimulation Started")
 for N, p in configs:
     update_config_file(N, p)
     simulate = reload_simulation_env()
@@ -93,7 +94,7 @@ for N, p in configs:
 
     print_node_death_comparison(baseline_death_rounds, proposed_death_rounds, q_learning_death_rounds)
 
-
+print(f"\nSimulation Completed")
 # ------------------------------
 # Step 5: Plots for 50 Nodes
 # ------------------------------
@@ -103,9 +104,9 @@ if 50 in results:
     # Dead Nodes
     plt.figure(figsize=(8, 5))
     plt.plot(res["baseline"]["dead"], label="Baseline DEECP", linestyle="--", color='blue')
-    plt.plot(res["proposed"]["dead"], label="Proposed Method", linestyle="--", color='red')
-    plt.plot(res["q_learning"]["dead"], label="Q-Learning Method", linestyle="--", color='green')
-    plt.title("Figure 9: Dead Nodes During Network Operation Time")
+    plt.plot(res["proposed"]["dead"], label="Enhanced DEECP", linestyle="--", color='red')
+    plt.plot(res["q_learning"]["dead"], label="Q-Learning DEECP", linestyle="--", color='green')
+    plt.title("Dead Nodes During Network Operation Time")
     plt.xlabel("Simulation Duration (sec)")
     plt.ylabel("Number of Dead Nodes")
     plt.legend()
@@ -116,9 +117,9 @@ if 50 in results:
     # Alive Nodes
     plt.figure(figsize=(8, 5))
     plt.plot(res["baseline"]["alive"], label="Baseline DEECP", linestyle="--", color='blue')
-    plt.plot(res["proposed"]["alive"], label="Proposed Method", linestyle="--", color='red')
-    plt.plot(res["q_learning"]["alive"], label="Q-Learning Method", linestyle="--", color='green')
-    plt.title("Figure 10: Alive Nodes During Network Operation Time")
+    plt.plot(res["proposed"]["alive"], label="Enhanced DEECP", linestyle="--", color='red')
+    plt.plot(res["q_learning"]["alive"], label="Q-Learning DEECP", linestyle="--", color='green')
+    plt.title("Alive Nodes During Network Operation Time")
     plt.xlabel("Simulation Duration (sec)")
     plt.ylabel("Number of Alive Nodes")
     plt.legend()
@@ -129,9 +130,9 @@ if 50 in results:
     # Throughput
     plt.figure(figsize=(8, 5))
     plt.plot(res["baseline"]["throughput"], label='Baseline DEECP', linestyle='--', color='purple')
-    plt.plot(res["proposed"]["throughput"], label='Proposed Method', linestyle='--', color='orange')
-    plt.plot(res["q_learning"]["throughput"], label='Q-Learning Method', linestyle='--', color='teal')
-    plt.title("Figure 11: Throughput During Network Operation Time")
+    plt.plot(res["proposed"]["throughput"], label='Enhanced DEECP', linestyle='--', color='orange')
+    plt.plot(res["q_learning"]["throughput"], label='Q-Learning DEECP', linestyle='--', color='teal')
+    plt.title("Throughput During Network Operation Time")
     plt.xlabel("Simulation Duration (sec)")
     plt.ylabel("Network Throughput (bits)")
     plt.legend()
@@ -145,9 +146,9 @@ if 50 in results:
 # ------------------------------
 plt.figure(figsize=(11, 5))
 for N, _ in configs:
-    plt.plot(results[N]["baseline"]["dead"], linestyle="--", label=f"Baseline N={N}")
-    plt.plot(results[N]["proposed"]["dead"], label=f"Proposed N={N}")
-    plt.plot(results[N]["q_learning"]["dead"], linestyle="-.", label=f"Q-Learning N={N}")
+    plt.plot(results[N]["baseline"]["dead"], linestyle="--", label=f"Baseline DEECP N={N}")
+    plt.plot(results[N]["proposed"]["dead"], label=f"Enhanced DEECP N={N}")
+    plt.plot(results[N]["q_learning"]["dead"], linestyle="-.", label=f"Q-Learning DEECP N={N}")
 plt.title("Dead Nodes During Network Operation")
 plt.xlabel("Simulation Duration (sec)")
 plt.ylabel("Number of Dead Nodes")
@@ -158,9 +159,9 @@ plt.show()
 
 plt.figure(figsize=(11, 5))
 for N, _ in configs:
-    plt.plot(results[N]["baseline"]["alive"], linestyle="--", label=f"Baseline N={N}")
-    plt.plot(results[N]["proposed"]["alive"], label=f"Proposed N={N}")
-    plt.plot(results[N]["q_learning"]["alive"], linestyle="-.", label=f"Q-Learning N={N}")
+    plt.plot(results[N]["baseline"]["alive"], linestyle="--", label=f"Baseline DEECP N={N}")
+    plt.plot(results[N]["proposed"]["alive"], label=f"Enhanced DEECP N={N}")
+    plt.plot(results[N]["q_learning"]["alive"], linestyle="-.", label=f"Q-Learning DEECP N={N}")
 plt.title("Alive Nodes During Network Operation")
 plt.xlabel("Simulation Duration (sec)")
 plt.ylabel("Number of Alive Nodes")
@@ -182,9 +183,9 @@ proposed_lifetimes = [next((i for i, x in enumerate(results[N]["proposed"]["dead
 q_learning_lifetimes = [next((i for i, x in enumerate(results[N]["q_learning"]["dead"]) if x == N), -1) for N, _ in configs]
 
 plt.figure(figsize=(10, 6))
-plt.bar(x - width, baseline_lifetimes, width, label='DEECP Baseline', color='steelblue')
-plt.bar(x, proposed_lifetimes, width, label='Proposed Method', color='orange')
-plt.bar(x + width, q_learning_lifetimes, width, label='Q-Learning Method', color='green')
+plt.bar(x - width, baseline_lifetimes, width, label='Baseline DEECP', color='steelblue')
+plt.bar(x, proposed_lifetimes, width, label='Enhanced DEECP', color='orange')
+plt.bar(x + width, q_learning_lifetimes, width, label='Q-Learning DEECP', color='green')
 
 plt.xlabel("Number of Nodes")
 plt.ylabel("Last Node Dead Round")
